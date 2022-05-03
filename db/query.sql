@@ -2,6 +2,17 @@ SELECT roles.id, title, salary, department.name AS department_name
 FROM roles 
 INNER JOIN department
 ON roles.department = department.id;
+
+
+
+SELECT * 
+FROM department 
+WHERE department.name = ;
+
+
+
+
+
 -- formatted table showing employee data, including employee ids, first names, last names, job titles, departments, salaries, and managers that the employees report to
 
 
@@ -15,17 +26,7 @@ INSERT INTO roles (title, salary, department)
 
 
 
+SELECT e.id, e.first_name, e.last_name,e.manager_id, salary, title, roles.department, name AS department FROM employee e LEFT JOIN roles ON e.role_id = roles.id LEFT JOIN department ON roles.department = department.id
 
 
-
-
-
-
-SELECT A.employee.id, CONCAT(A.first_name,' ', A.last_name) AS employee_name, roles.name, roles.salary, department.name, CONCAT(B.first_name,' ', B.last_name) AS manager_name
-FROM employee A, employee B
-WHERE A.manager_id = B.employee.id
-INNER JOIN roles
-ON A.employee.role_id = roles.id
-INNER JOIN department
-ON A.employee.role_id
-
+SELECT CONCAT('first_name',' ', 'last_name') AS employee_name FROM employee;

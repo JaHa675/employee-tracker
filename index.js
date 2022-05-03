@@ -90,7 +90,8 @@ function viewRoles() {
 }
 
 function viewEmployees() {
-  const sql = "";
+  const sql =
+    "SELECT e.id, e.first_name, e.last_name,e.manager_id, salary, title, roles.department, name AS department FROM employee e LEFT JOIN roles ON e.role_id = roles.id LEFT JOIN department ON roles.department = department.id";
   db.query(sql, (err, res) => {
     if (err) {
       throw err;
@@ -121,14 +122,14 @@ function addDepartment() {
 }
 
 function addRole() {
-  const sql = "";
+  const sql = "SELECT department.name FROM department";
   db.query(sql, (err, res) => {
     if (err) {
       throw err;
     }
     const departments = res;
     inquirer
-      .prompt(
+      .prompt([
         {
           type: "input",
           name: "roleTitle",
@@ -140,19 +141,27 @@ function addRole() {
           message: "Salary of role?",
         },
         {
-          type: "choice",
+          type: "list",
           name: "roleDept",
-          message: [departments],
-        }
-      )
+          choices: [...departments],
+        },
+      ])
       .then((answer) => {
-        const sql = ``;
-        const params = [answer.roleTitle, answer.roleSalary, ]
-        db.query(sql, (err, res) => {
+        let departmentId;
+        db.query(`SELECT * FROM department`, (err, res) => {
           if (err) {
             throw err;
           }
-          console.log(`${answer.deptName} added to department list`);
+          const departmentIdArray = res.filter(word => word.name === answer.roleDept);
+          departmentId = departmentIdArray[0].id;
+        });
+        const insertRoleSql = `INSERT INTO roles (title, salary, department) VALUES (?, ?, ?)`;
+        const params = [answer.roleTitle, answer.roleSalary, departmentId];
+        db.query(insertRoleSql, params, (err, res) => {
+          if (err) {
+            throw err;
+          }
+          console.log(`${answer}added to role list`);
           ask();
         });
       });
